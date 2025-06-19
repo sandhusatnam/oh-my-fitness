@@ -15,11 +15,10 @@ export const theme = {
     backgroundWhite: '#FFFFFF',
     
     // Text
-    textPrimary: '#111827',
+    textPrimary: '#374151',
     textSecondary: '#6B7280',
     textTertiary: '#9CA3AF',
     textInverse: '#FFFFFF',
-    textSelected: '#374151',//label, selectionbutton selected value
     
     // Borders
     border: '#E5E7EB',

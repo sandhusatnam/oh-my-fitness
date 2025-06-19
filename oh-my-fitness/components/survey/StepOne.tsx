@@ -5,9 +5,7 @@ import { router } from 'expo-router';
 import Animated, { FadeInUp } from 'react-native-reanimated';
 import { Feather } from '@expo/vector-icons';
 
-import { SelectionButton } from '@/components/common/SelectionButton';
-import { Input } from '@/components/common/Input';
-import { Button } from '@/components/common/Button';
+import { Button, Input, SelectionButton } from '@/components/common';
 import { useSurvey } from '@/contexts/SurveyContext';
 import { theme } from '@/constants/theme';
 
@@ -66,7 +64,7 @@ export const StepOne: FC = () => {
       </View>
 
       <View style={styles.stepIndicator}>
-        <Text style={styles.stepText}>1/10</Text>
+        <Text style={styles.stepText}>1/4</Text>
       </View>
 
       <Animated.View entering={FadeInUp.delay(200)} style={styles.content}>
