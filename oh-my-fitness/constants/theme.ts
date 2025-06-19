@@ -23,6 +23,7 @@ export const theme = {
     // Borders
     border: '#E5E7EB',
     borderLight: '#F3F4F6',
+    borderDark: '#D1D5DB',
     
     // Gradients
     gradientStart: '#D0EFFF',

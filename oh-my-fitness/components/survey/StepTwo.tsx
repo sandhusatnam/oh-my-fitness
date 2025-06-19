@@ -46,7 +46,7 @@ export const StepTwo: FC = () => {
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <View style={styles.header}>
         <TouchableOpacity onPress={previousStep} style={styles.backButton}>
-          <Feather name="x" size={24} color={theme.colors.primaryDark} />
+          <Feather name="arrow-left" size={24} color={theme.colors.primaryDark} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Your Schedule</Text>
         <View style={styles.placeholder} />
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: theme.colors.backgroundTertiary,
+    borderBottomColor: theme.colors.borderLight,
   },
   backButton: {
     padding: 8,
