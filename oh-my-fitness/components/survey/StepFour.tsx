@@ -50,7 +50,7 @@ export default function StepFour() {
     setWorkoutsToAvoid(updated);
   };
 
-  const handleSubmit = async () => {
+  const handleNext = async () => {
     if (enjoyedWorkouts.length === 0) {
       Alert.alert('Selection Required', 'Please select at least one workout type you enjoy.');
       return;
@@ -58,13 +58,13 @@ export default function StepFour() {
 
     setIsSubmitting(true);
     
-    // Update final data
+    // Update final survey data
     updateData({
       enjoyedWorkouts,
       workoutsToAvoid,
     });
 
-    // Navigate to ??
+    router.push('/auth/register');
   };
 
   return (
@@ -74,7 +74,9 @@ export default function StepFour() {
           <Feather name="arrow-left" size={24} color={theme.colors.primaryDark} />
         </TouchableOpacity>
         <View style={styles.headerCenter} />
-
+        <TouchableOpacity onPress={handleNext}>
+          <Text style={styles.nextText}>Next</Text>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.stepIndicator}>
@@ -119,9 +121,9 @@ export default function StepFour() {
 
         <View style={styles.buttonContainer}>
           <Button
-            title={isSubmitting ? "Generating Your Plan..." : "Generate My Plan"}
-            onPress={handleSubmit}
-            disabled={isSubmitting || enjoyedWorkouts.length === 0}
+            title="Continue to Sign Up"
+            onPress={handleNext}
+            disabled={enjoyedWorkouts.length === 0}
           />
         </View>
       </Animated.View>
@@ -148,8 +150,13 @@ const styles = StyleSheet.create({
   },
   headerCenter: {
     flex: 1,
-   },
-   stepIndicator: {
+  },
+  nextText: {
+    fontSize: theme.fontSize.md,
+    fontWeight: theme.fontWeight.medium,
+    color: theme.colors.primary,
+  },
+  stepIndicator: {
     paddingHorizontal: 20,
     paddingVertical: 16,
   },

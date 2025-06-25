@@ -227,6 +227,6 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   buttonContainer: {
-    marginTop: 32,
+    marginTop: 32
   },
 });

@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -10,6 +9,7 @@ import 'react-native-reanimated';
 
 import { useFrameworkReady } from '@/hooks/useFrameworkReady';
 import { SurveyProvider } from '@/contexts/SurveyContext';
+import { AuthProvider } from '@/contexts/AuthContext';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -47,14 +47,16 @@ function RootLayoutNav() {
   useFrameworkReady();
 
   return (
-    <SurveyProvider>
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="index" />
-        <Stack.Screen name="survey" />
-        <Stack.Screen name="(tabs)" />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
-    </SurveyProvider>
+    <AuthProvider>
+      <SurveyProvider>    
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="index" />
+          <Stack.Screen name="survey" />
+          <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="+not-found" />
+        </Stack>
+        <StatusBar style="auto" />
+      </SurveyProvider>
+    </AuthProvider>
   );
 }
