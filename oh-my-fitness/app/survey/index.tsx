@@ -4,7 +4,7 @@ import { View, StyleSheet, SafeAreaView } from 'react-native';
 
 import { useSurvey } from '@/contexts/SurveyContext';
 import { ProgressBar } from '@/components/common';
-import { StepOne, StepTwo, StepThree } from '@/components/survey';
+import { StepOne, StepTwo, StepThree, StepFour } from '@/components/survey';
 
 export default function SurveyScreen() {
   const { state } = useSurvey();
@@ -18,9 +18,9 @@ export default function SurveyScreen() {
       case 3:
         return <StepThree />;
       case 4:
-        return <>4</>;
+        return <StepFour />;
       default:
-        return <>1</>;
+        return <StepOne />;
     }
   };
 
