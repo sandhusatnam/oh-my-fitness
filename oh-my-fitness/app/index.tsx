@@ -37,8 +37,8 @@ export default function WelcomeScreen() {
     };
   });
 
-    const handleGetStarted = () => {
-      //todo route to survey screen
+  const handleGetStarted = () => {
+      router.push('/survey');
   };
 
   return (

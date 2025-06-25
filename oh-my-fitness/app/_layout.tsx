@@ -9,6 +9,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import 'react-native-reanimated';
 
 import { useFrameworkReady } from '@/hooks/useFrameworkReady';
+import { SurveyProvider } from '@/contexts/SurveyContext';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -46,13 +47,14 @@ function RootLayoutNav() {
   useFrameworkReady();
 
   return (
-    <>
+    <SurveyProvider>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="index" />
+        <Stack.Screen name="survey" />
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />
-    </>
+    </SurveyProvider>
   );
 }

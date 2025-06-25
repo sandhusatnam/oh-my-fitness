@@ -1,7 +1,7 @@
 export const theme = {
   colors: {
     primary: '#617AFA',
-    primaryDark: '#4F46E5',
+    primaryDark: '#374151',
     secondary: '#8B5CF6',
     accent: '#EC4899',
     success: '#10B981',
@@ -9,12 +9,13 @@ export const theme = {
     error: '#EF4444',
     
     // Backgrounds
-    background: '#FFFFFF',
+    background: '#E5E7EB',
     backgroundSecondary: '#F9FAFB',
     backgroundTertiary: '#F3F4F6',
+    backgroundWhite: '#FFFFFF',
     
     // Text
-    textPrimary: '#111827',
+    textPrimary: '#374151',
     textSecondary: '#6B7280',
     textTertiary: '#9CA3AF',
     textInverse: '#FFFFFF',
@@ -22,6 +23,7 @@ export const theme = {
     // Borders
     border: '#E5E7EB',
     borderLight: '#F3F4F6',
+    borderDark: '#D1D5DB',
     
     // Gradients
     gradientStart: '#D0EFFF',
