@@ -6,6 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useSurvey } from '@/contexts/SurveyContext';
 import { router } from 'expo-router';
 import { theme } from '@/constants/theme';
+import { EMAIL_REGEX, MIN_PASSWORD_LENGTH } from '@/constants/app';
 
 export default function RegisterScreen() {
   const { register, state } = useAuth();
@@ -24,14 +25,14 @@ export default function RegisterScreen() {
     
     if (!email) {
       newErrors.email = 'Email is required';
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
+    } else if (EMAIL_REGEX.test(email)) {
       newErrors.email = 'Email is invalid';
     }
     
     if (!password) {
       newErrors.password = 'Password is required';
-    } else if (password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
+    } else if (password.length < MIN_PASSWORD_LENGTH) {
+      newErrors.password = `Password must be at least ${MIN_PASSWORD_LENGTH} characters`;
     }
     
     setErrors(newErrors);
