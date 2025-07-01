@@ -42,7 +42,6 @@ export default function LoadingScreen() {
 
         await generatePersonalizedPlan({ surveyData, userInfo: user! });
 
-        //TODO update route
         router.replace('/(tabs)');
       } catch (error) {
         console.error('Error generating personalized plan:', error);
@@ -52,9 +51,8 @@ export default function LoadingScreen() {
     generatePlan();
 
     return () => {
-      // Cleanup animations
-      pulseScale.value = 1; // Reset pulse animation
-      progress.value = 0; // Reset progress animation
+      pulseScale.value = 1;
+      progress.value = 0;
     };
   }, []);
 
