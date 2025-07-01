@@ -1,16 +1,15 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, Alert, ScrollView } from 'react-native';
-import { Input, Button } from '@/components/common';
-import { useAuth } from '@/contexts/AuthContext';
-import { useSurvey } from '@/contexts/SurveyContext';
 import { router } from 'expo-router';
-import { theme } from '@/constants/theme';
+import { Alert, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
+
+import { Button, Input } from '@/components/common';
 import { EMAIL_REGEX, MIN_PASSWORD_LENGTH } from '@/constants/app';
+import { theme } from '@/constants/theme';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function RegisterScreen() {
   const { register, state } = useAuth();
-  const { state: surveyState } = useSurvey();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -25,7 +24,7 @@ export default function RegisterScreen() {
     
     if (!email) {
       newErrors.email = 'Email is required';
-    } else if (EMAIL_REGEX.test(email)) {
+    } else if (!EMAIL_REGEX.test(email.trim())) {
       newErrors.email = 'Email is invalid';
     }
     
@@ -39,43 +38,13 @@ export default function RegisterScreen() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const generatePersonalizedPlan = async (userToken: string) => {
-    try {
-      // Simulate API call to generate personalized plan
-      const response = await fetch('/api/generate-plan', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${userToken}`,
-        },
-        body: JSON.stringify({
-          surveyData: surveyState.data,
-          userInfo: { name, email }
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to generate plan');
-      }
-
-      const planData = await response.json();
-      return planData;
-    } catch (error) {
-      console.error('Plan generation error:', error);
-      throw error;
-    }
-  };
-
   const handleRegister = async () => {
     if (!validateForm()) return;
-    
+
     try {
-      const authResult = await register(name, email, password);
-      console.log({authResult})
-      await generatePersonalizedPlan(authResult.token);
-      
+      await register(name.trim(), email.trim(), password);
       router.push('/loading');
-      
+
     } catch (error: any) {
       Alert.alert('Registration Failed', error.message || 'Please try again.');
     }

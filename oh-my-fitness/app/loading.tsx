@@ -1,48 +1,61 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
-import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
 import { router } from 'expo-router';
+import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
+
+import { theme } from '@/constants/theme';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSurvey } from '@/contexts/SurveyContext';
-import Animated, { 
-  useSharedValue, 
-  useAnimatedStyle, 
-  withTiming,
+import { useGeneratePersonalizedPlan } from '@/data/cache/generatePlan.cache';
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
   withRepeat,
-  Easing
+  withTiming
 } from 'react-native-reanimated';
-import { theme } from '@/constants/theme';
 
 export default function LoadingScreen() {
-  const { updateUser } = useAuth();
+  const { state: userInfo } = useAuth();
   const { state: surveyState } = useSurvey();
   const progress = useSharedValue(0);
   const pulseScale = useSharedValue(1);
 
+  const { mutateAsync: generatePersonalizedPlan } = useGeneratePersonalizedPlan();
+
   useEffect(() => {
-    // Start progress animation
     progress.value = withTiming(100, { 
-      duration: 3000,
+      duration: 5000,
       easing: Easing.out(Easing.quad)
     });
 
-    // Pulse animation
     pulseScale.value = withRepeat(
       withTiming(1.1, { duration: 1000 }),
       -1,
       true
     );
 
-    // Simulate API call and plan generation
-    const timer = setTimeout(() => {
-      // Mark user as having completed survey
-      updateUser({ hasCompletedSurvey: true });
-      
-      // Navigate to main app
-      router.replace('/(tabs)');
-    }, 3500);
+    const generatePlan = async () => {
+      try {
+        const surveyData = surveyState.data;
+        const user = userInfo.user;
 
-    return () => clearTimeout(timer);
+        await generatePersonalizedPlan({ surveyData, userInfo: user! });
+
+        //TODO update route
+        router.replace('/(tabs)');
+      } catch (error) {
+        console.error('Error generating personalized plan:', error);
+      }
+    };
+
+    generatePlan();
+
+    return () => {
+      // Cleanup animations
+      pulseScale.value = 1; // Reset pulse animation
+      progress.value = 0; // Reset progress animation
+    };
   }, []);
 
   const progressStyle = useAnimatedStyle(() => {
