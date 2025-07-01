@@ -50,18 +50,20 @@ function RootLayoutNav() {
   useFrameworkReady();
 
   return (
-        <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <SurveyProvider>    
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="index" />
-          <Stack.Screen name="survey" />
-          <Stack.Screen name="(tabs)" />
-          <Stack.Screen name="+not-found" />
-        </Stack>
-        <StatusBar style="auto" />
-      </SurveyProvider>
-      </AuthProvider>
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <SurveyProvider>    
+            <Stack screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="index" />
+              <Stack.Screen name="auth" />
+              <Stack.Screen name="survey" />
+              <Stack.Screen name="loading" />
+              <Stack.Screen name="(tabs)" />
+              <Stack.Screen name="+not-found" />
+            </Stack>
+            <StatusBar style="auto" />
+          </SurveyProvider>
+        </AuthProvider>
       </QueryClientProvider>
   );
 }
