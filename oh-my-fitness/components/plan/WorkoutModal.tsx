@@ -17,15 +17,15 @@ const WorkoutModal: React.FC<WorkoutModalProps> = ({ visible, exercises, onClose
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
           <ScrollView style={styles.modalScrollView}>
-            {exercises && (
-              exercises.map((exercise, index) => (
+            {
+              exercises?.map((exercise, index) => (
                 <View key={index} style={styles.exerciseItem}>
                   <Image source={{ uri: exercise.imageUrl }} style={styles.exerciseImage} resizeMode="cover" />
                   <Text style={styles.exerciseName}>{exercise.name}</Text>
                   <Text style={styles.exerciseDetails}>{`Sets: ${exercise.sets}, Reps: ${exercise.reps}`}</Text>
                 </View>
               ))
-            )}
+            }
           </ScrollView>
           <TouchableOpacity style={styles.closeButton} onPress={onClose}>
             <Text style={styles.closeButtonText}>Close</Text>
@@ -41,18 +41,21 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: theme.colors.backgroundWhite,
   },
   modalContent: {
-    width: '80%',
-    backgroundColor: theme.colors.background,
+    flex: 1,
+    backgroundColor: theme.colors.backgroundWhite,
     borderRadius: theme.borderRadius.md,
     padding: theme.spacing.lg,
     alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    height: '100%',
   },
   modalScrollView: {
     width: '100%',
-    maxHeight: 400,
+    flex: 1,
   },
   exerciseItem: {
     marginBottom: theme.spacing.md,

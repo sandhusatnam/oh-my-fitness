@@ -44,17 +44,20 @@ const styles = StyleSheet.create({
     backgroundColor: theme.colors.backgroundWhite,
   },
   modalContent: {
-    width: '80%',
+    flex: 1,
     backgroundColor: theme.colors.backgroundWhite,
     borderRadius: theme.borderRadius.md,
     padding: theme.spacing.lg,
-    alignItems: 'center',
+    justifyContent: 'flex-start',
+    width: '100%',
+    height: '100%',
   },
   modalTitle: {
     fontSize: theme.fontSize.xl,
     fontWeight: theme.fontWeight.bold,
     color: theme.colors.textPrimary,
     marginBottom: theme.spacing.md,
+    textAlign: 'center',
   },
   modalImage: {
     width: '100%',
@@ -69,8 +72,7 @@ const styles = StyleSheet.create({
   },
   modalMacros: {
     fontSize: theme.fontSize.sm,
-    color: theme.colors.textSecondary,
-    marginBottom: theme.spacing.sm,
+    color: theme.colors.textSecondary
   },
   closeButton: {
     backgroundColor: theme.colors.primary,
@@ -78,6 +80,7 @@ const styles = StyleSheet.create({
     paddingVertical: theme.spacing.sm,
     borderRadius: theme.borderRadius.sm,
     marginTop: theme.spacing.md,
+    alignSelf: 'center'
   },
   closeButtonText: {
     fontSize: theme.fontSize.md,
