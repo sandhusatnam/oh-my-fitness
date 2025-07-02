@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { ActivityIndicator, Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { MealModal, WorkoutModal } from '@/components/plan';
+import { daysOfWeek } from '@/constants/app';
 import { theme } from '@/constants/theme';
 import { useGetUserWithPlan } from '@/data/cache/getUserProfile.cache';
 import { DayOfWeek, Exercise, Meal } from '@/types/userWithPlan.type';
@@ -14,9 +15,8 @@ export default function TodayScreen() {
   const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null);
   const [selectedWorkout, setSelectedWorkout] = useState<Exercise[] | null>(null);
 
-  const daysOfWeek = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-  const today = new Date().getDay();
-  const todayPlan = userWithPlan?.fitnessPlan?.plan?.weekly_plan?.[daysOfWeek[today] as DayOfWeek];
+  const today = daysOfWeek[new Date(Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York' }).format(new Date())).getDay()];
+  const todayPlan = userWithPlan?.fitnessPlan?.plan?.weekly_plan?.[today as DayOfWeek];
 
   const openMealModal = (meal: Meal) => {
     setSelectedMeal(meal);
