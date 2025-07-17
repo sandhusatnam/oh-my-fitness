@@ -73,16 +73,24 @@ export default function ProgramScreen() {
                 <View style={styles.activityInfo}>
                   <Text style={styles.activityLabel}>Workout</Text>
                   <Text style={styles.activityTitle}>{dayPlan.workout.type}</Text>
-                  <Text style={styles.activityDuration}>{`${dayPlan.workout.duration_minutes} min`}</Text>
-                  <TouchableOpacity style={styles.viewButton} onPress={() => openWorkoutModal(dayPlan.workout.exercises)}>
-                    <Text style={styles.viewButtonText}>View Exercises</Text>
-                  </TouchableOpacity>
+                  {dayPlan.workout.type && dayPlan.workout.type.toLowerCase() === 'rest' ? (
+                    <Text style={{ color: theme.colors.textSecondary, marginTop: 10, fontStyle: 'italic' }}>Rest Day – No workout scheduled</Text>
+                  ) : (
+                    <>
+                      <Text style={styles.activityDuration}>{`${dayPlan.workout.duration_minutes} min`}</Text>
+                      <TouchableOpacity style={styles.viewButton} onPress={() => openWorkoutModal(dayPlan.workout.exercises)}>
+                        <Text style={styles.viewButtonText}>View Exercises</Text>
+                      </TouchableOpacity>
+                    </>
+                  )}
                 </View>
-                <Image
-                  source={{ uri: dayPlan.workout.exercises[0]?.imageUrl }}
-                  style={styles.activityImage}
-                  resizeMode="cover"
-                />
+                {dayPlan.workout.type && dayPlan.workout.type.toLowerCase() !== 'rest' && (
+                  <Image
+                    source={{ uri: dayPlan.workout.exercises[0]?.imageUrl }}
+                    style={styles.activityImage}
+                    resizeMode="cover"
+                  />
+                )}
               </View>
             )}
 

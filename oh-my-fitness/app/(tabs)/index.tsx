@@ -93,22 +93,28 @@ export default function TodayScreen() {
                 <View style={styles.workoutInfo}>
                   <Text style={styles.workoutTitle}>{todayPlan.workout.type}</Text>
                   <Text style={styles.workoutDescription}>{todayPlan.workout.notes}</Text>
-                  <Text style={styles.workoutMeta}>{`${todayPlan.workout.duration_minutes} min`}</Text>
-                  <TouchableOpacity style={styles.viewButton} onPress={() => openWorkoutModal(todayPlan.workout.exercises)}>
-                    <Text style={styles.viewButtonText}>View Exercises</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={[styles.viewButton, { flexDirection: 'row', alignItems: 'center', marginTop: 10, backgroundColor: doneSuccess ? theme.colors.success : theme.colors.backgroundTertiary }]}
-                    onPress={handleMarkWorkoutDone}
-                    disabled={markingDone}
-                  >
-                    {markingDone ? (
-                      <ActivityIndicator size="small" color={theme.colors.textPrimary} style={{ marginRight: 8 }} />
-                    ) : (
-                      <Ionicons name={doneSuccess ? 'checkmark-done' : 'checkmark-done-outline'} size={18} color={theme.colors.textPrimary} style={{ marginRight: 8 }} />
-                    )}
-                    <Text style={styles.viewButtonText}>{doneSuccess ? 'Workout Done!' : 'Mark as Done'}</Text>
-                  </TouchableOpacity>
+                  {todayPlan.workout.type && todayPlan.workout.type.toLowerCase() === 'rest' ? (
+                    <Text style={{ color: theme.colors.textSecondary, marginTop: 10, fontStyle: 'italic' }}>Rest Day – No workout scheduled</Text>
+                  ) : (
+                    <>
+                      <Text style={styles.workoutMeta}>{`${todayPlan.workout.duration_minutes} min`}</Text>
+                      <TouchableOpacity style={styles.viewButton} onPress={() => openWorkoutModal(todayPlan.workout.exercises)}>
+                        <Text style={styles.viewButtonText}>View Exercises</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={[styles.viewButton, { flexDirection: 'row', alignItems: 'center', marginTop: 10, backgroundColor: doneSuccess ? theme.colors.success : theme.colors.backgroundTertiary }]}
+                        onPress={handleMarkWorkoutDone}
+                        disabled={markingDone}
+                      >
+                        {markingDone ? (
+                          <ActivityIndicator size="small" color={theme.colors.textPrimary} style={{ marginRight: 8 }} />
+                        ) : (
+                          <Ionicons name={doneSuccess ? 'checkmark-done' : 'checkmark-done-outline'} size={18} color={theme.colors.textPrimary} style={{ marginRight: 8 }} />
+                        )}
+                        <Text style={styles.viewButtonText}>{doneSuccess ? 'Workout Done!' : 'Mark as Done'}</Text>
+                      </TouchableOpacity>
+                    </>
+                  )}
                 </View>
               </View>
             )}
