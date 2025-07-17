@@ -1,15 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 
-import { Ionicons } from '@expo/vector-icons';
 import { ActivityIndicator, Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 import { MealModal, WorkoutModal } from '@/components/plan';
 import { daysOfWeek } from '@/constants/app';
 import { theme } from '@/constants/theme';
+import { useGetUserWithPlan } from '@/data/cache/getUserProfile.cache';
 import { toggleWorkoutCompletion } from '@/data/api/markWorkoutDone.api';
 import { useGetProgress, useInvalidateProgress } from '@/data/cache/getProgress.cache';
-import { useGetUserWithPlan } from '@/data/cache/getUserProfile.cache';
-import type { WorkoutHistoryItem } from '@/types/progress.type';
+import type { ProgressData, WorkoutHistoryItem } from '@/types/progress.type';
 import { DayOfWeek, Exercise, Meal } from '@/types/userWithPlan.type';
 
 export default function TodayScreen() {
@@ -93,11 +93,11 @@ export default function TodayScreen() {
                 <View style={styles.workoutInfo}>
                   <Text style={styles.workoutTitle}>{todayPlan.workout.type}</Text>
                   <Text style={styles.workoutDescription}>{todayPlan.workout.notes}</Text>
-                  <Text style={styles.workoutMeta}>{`${todayPlan.workout.duration_minutes} min`}</Text>
                   {todayPlan.workout.type && todayPlan.workout.type.toLowerCase() === 'rest' ? (
                     <Text style={{ color: theme.colors.textSecondary, marginTop: 10, fontStyle: 'italic' }}>Rest Day – No workout scheduled</Text>
                   ) : (
                     <>
+                      <Text style={styles.workoutMeta}>{`${todayPlan.workout.duration_minutes} min`}</Text>
                       <TouchableOpacity style={styles.viewButton} onPress={() => openWorkoutModal(todayPlan.workout.exercises)}>
                         <Text style={styles.viewButtonText}>View Exercises</Text>
                       </TouchableOpacity>
