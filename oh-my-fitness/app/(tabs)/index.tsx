@@ -1,11 +1,15 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import { ActivityIndicator, Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 import { MealModal, WorkoutModal } from '@/components/plan';
 import { daysOfWeek } from '@/constants/app';
 import { theme } from '@/constants/theme';
 import { useGetUserWithPlan } from '@/data/cache/getUserProfile.cache';
+import { toggleWorkoutCompletion } from '@/data/api/markWorkoutDone.api';
+import { useGetProgress, useInvalidateProgress } from '@/data/cache/getProgress.cache';
+import type { ProgressData, WorkoutHistoryItem } from '@/types/progress.type';
 import { DayOfWeek, Exercise, Meal } from '@/types/userWithPlan.type';
 
 export default function TodayScreen() {
@@ -14,6 +18,8 @@ export default function TodayScreen() {
   const [workoutModalVisible, setWorkoutModalVisible] = useState(false);
   const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null);
   const [selectedWorkout, setSelectedWorkout] = useState<Exercise[] | null>(null);
+  const [markingDone, setMarkingDone] = useState(false);
+  const [doneSuccess, setDoneSuccess] = useState(false);
 
   const today = daysOfWeek[new Date(Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York' }).format(new Date())).getDay()];
   const todayPlan = userWithPlan?.fitnessPlan?.plan?.weekly_plan?.[today as DayOfWeek];
@@ -26,6 +32,34 @@ export default function TodayScreen() {
   const openWorkoutModal = (workout: Exercise[]) => {
     setSelectedWorkout(workout);
     setWorkoutModalVisible(true);
+  };
+
+  const todayDate = new Date();
+  const todayDateStr = todayDate.toISOString().split('T')[0];
+  const endDateObj = new Date(todayDate);
+  endDateObj.setDate(todayDate.getDate() + 1);
+  const endDate = endDateObj.toISOString().split('T')[0];
+  const startDateObj = new Date(todayDate);
+  startDateObj.setDate(todayDate.getDate() - 30);
+  const startDate = startDateObj.toISOString().split('T')[0];
+  const { data: progress } = useGetProgress(startDate, endDate);
+  const invalidateProgress = useInvalidateProgress();
+
+  useEffect(() => {
+    const workoutDone = progress?.workoutData?.history?.some((item: WorkoutHistoryItem) => item.date.startsWith(todayDateStr));
+    setDoneSuccess(!!workoutDone);
+  }, [progress, todayDateStr]);
+
+  const handleMarkWorkoutDone = async () => {
+    setMarkingDone(true);
+    try {
+      await toggleWorkoutCompletion();
+      await invalidateProgress(startDate, endDate);
+    } catch (e) {
+      // swallow error
+    } finally {
+      setMarkingDone(false);
+    }
   };
 
   return (
@@ -44,17 +78,36 @@ export default function TodayScreen() {
             <Text style={styles.sectionTitle}>Workout</Text>
             {!!todayPlan.workout && (
               <View style={styles.workoutCard}>
-                <Image
-                  source={{ uri: todayPlan.workout.exercises[0]?.imageUrl }}
-                  style={styles.workoutImage}
-                  resizeMode="cover"
-                />
+                {todayPlan.workout.exercises[0]?.imageUrl ? (
+                  <Image
+                    source={{ uri: todayPlan.workout.exercises[0].imageUrl }}
+                    style={styles.workoutImage}
+                    resizeMode="cover"
+                  />
+                ) : (
+                  <View style={[styles.workoutImage, { justifyContent: 'center', alignItems: 'center', backgroundColor: theme.colors.backgroundTertiary }]}> 
+                    <Ionicons name="image-outline" size={48} color={theme.colors.textSecondary} />
+                    <Text style={{ color: theme.colors.textSecondary, marginTop: 8 }}>Image coming soon</Text>
+                  </View>
+                )}
                 <View style={styles.workoutInfo}>
                   <Text style={styles.workoutTitle}>{todayPlan.workout.type}</Text>
                   <Text style={styles.workoutDescription}>{todayPlan.workout.notes}</Text>
                   <Text style={styles.workoutMeta}>{`${todayPlan.workout.duration_minutes} min`}</Text>
                   <TouchableOpacity style={styles.viewButton} onPress={() => openWorkoutModal(todayPlan.workout.exercises)}>
                     <Text style={styles.viewButtonText}>View Exercises</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={[styles.viewButton, { flexDirection: 'row', alignItems: 'center', marginTop: 10, backgroundColor: doneSuccess ? theme.colors.success : theme.colors.backgroundTertiary }]}
+                    onPress={handleMarkWorkoutDone}
+                    disabled={markingDone}
+                  >
+                    {markingDone ? (
+                      <ActivityIndicator size="small" color={theme.colors.textPrimary} style={{ marginRight: 8 }} />
+                    ) : (
+                      <Ionicons name={doneSuccess ? 'checkmark-done' : 'checkmark-done-outline'} size={18} color={theme.colors.textPrimary} style={{ marginRight: 8 }} />
+                    )}
+                    <Text style={styles.viewButtonText}>{doneSuccess ? 'Workout Done!' : 'Mark as Done'}</Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -72,11 +125,18 @@ export default function TodayScreen() {
                         <Text style={styles.viewButtonText}>View</Text>
                       </TouchableOpacity>
                     </View>
-                    <Image
-                      source={{ uri: meal.imageUrl }}
-                      style={styles.mealImage}
-                      resizeMode="cover"
-                    />
+                    {meal.imageUrl ? (
+                      <Image
+                        source={{ uri: meal.imageUrl }}
+                        style={styles.mealImage}
+                        resizeMode="cover"
+                      />
+                    ) : (
+                      <View style={[styles.mealImage, { justifyContent: 'center', alignItems: 'center', backgroundColor: theme.colors.backgroundTertiary }]}> 
+                        <Ionicons name="image-outline" size={32} color={theme.colors.textSecondary} />
+                        <Text style={{ color: theme.colors.textSecondary, fontSize: 10, marginTop: 4 }}>Image coming soon</Text>
+                      </View>
+                    )}
                   </View>
                 ))}
               </View>

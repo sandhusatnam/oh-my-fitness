@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-
 import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, Alert } from 'react-native';
 import { Input, Button } from '@/components/common';
 import { useAuth } from '@/contexts/AuthContext';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { theme } from '@/constants/theme';
 
 export default function LoginScreen() {
+  const params = useLocalSearchParams();
+  const fromWelcome = params.from === 'welcome';
   const { login, state } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -35,21 +36,32 @@ export default function LoginScreen() {
     if (!validateForm()) return;
     
     try {
-      await login(email, password);
-      // Navigation will be handled by the auth context effect in index.tsx
+      const result = await login(email, password);
+
+      if (!!result?.token) {
+        router.push('/(tabs)');
+      }
     } catch (error) {
-      Alert.alert('Login Failed', 'Please check your credentials and try again.');
+      //log error
+    }
+    finally{
+       Alert.alert('Login Failed', 'Please check your credentials and try again.');
     }
   };
 
   const handleRegister = () => {
-    router.push('/auth/register');
+    router.push({ pathname: '/auth/register', params: { from: 'login' } })
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
-        <Text style={styles.title}>Welcome Back!</Text>
+        {fromWelcome && (
+          <TouchableOpacity onPress={() => router.replace('/')} style={{ position: 'absolute', top: 0, left: 0, padding: 16, zIndex: 10 }}>
+            <Text style={{ color: theme.colors.primary, fontWeight: theme.fontWeight.bold, fontSize: 18 }}>Back</Text>
+          </TouchableOpacity>
+        )}
+        <Text style={styles.title}>Welcome!</Text>
         <Text style={styles.subtitle}>Sign in to continue your fitness journey</Text>
         
         <View style={styles.form}>
@@ -79,13 +91,6 @@ export default function LoginScreen() {
             style={styles.loginButton}
           />
         </View>
-        
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>Don't have an account? </Text>
-          <TouchableOpacity onPress={handleRegister}>
-            <Text style={styles.linkText}>Sign Up</Text>
-          </TouchableOpacity>
-        </View>
       </View>
     </SafeAreaView>
   );
@@ -94,7 +99,7 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.colors.background,
+    backgroundColor: theme.colors.backgroundWhite,
   },
   content: {
     flex: 1,
