@@ -1,19 +1,19 @@
-import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, Dimensions } from 'react-native';
+
 import { Feather } from '@expo/vector-icons';
+import { addDays, subDays } from 'date-fns';
+import { Dimensions, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { LineChart } from 'react-native-chart-kit';
+
 import { theme } from '@/constants/theme';
 import { useGetProgress } from '@/data/cache/getProgress.cache';
-import { LineChart } from 'react-native-chart-kit';
 import { WeightHistoryItem } from '@/types/progress.type';
+
+import { formatDateYMD } from '@/utils/date.util';
 
 export default function Progress() {
   const todayDate = new Date();
-  const endDateObj = new Date(todayDate);
-  endDateObj.setDate(todayDate.getDate() + 1);
-  const endDate = endDateObj.toISOString().split('T')[0];
-  const startDateObj = new Date(todayDate);
-  startDateObj.setDate(todayDate.getDate() - 30);
-  const startDate = startDateObj.toISOString().split('T')[0];
+  const endDate = formatDateYMD(addDays(todayDate, 1));
+  const startDate = formatDateYMD(subDays(todayDate, 30));
   const { data: progress, isLoading } = useGetProgress(startDate, endDate);
 
   const workoutsCompleted = progress?.workoutData?.metrics?.frequency.totalWorkouts || 0;

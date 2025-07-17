@@ -1,5 +1,8 @@
 import { useState } from 'react';
 
+import { TIME_ZONE } from '@/utils/date.util';
+import { toZonedTime } from 'date-fns-tz';
+
 import { ActivityIndicator, Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { MealModal, WorkoutModal } from '@/components/plan';
@@ -14,7 +17,9 @@ export default function ProgramScreen() {
   const [workoutModalVisible, setWorkoutModalVisible] = useState(false);
   const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null);
   const [selectedWorkout, setSelectedWorkout] = useState<Exercise[] | null>(null);
-  const today = daysOfWeek[new Date(Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York' }).format(new Date())).getDay()];
+  
+  const now = toZonedTime(new Date(), TIME_ZONE);
+  const today = daysOfWeek[now.getDay()];
   const [selectedDay, setSelectedDay] = useState<DayOfWeek>(today as DayOfWeek);
 
   const openMealModal = (meal: Meal) => {

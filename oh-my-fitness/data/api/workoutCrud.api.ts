@@ -1,7 +1,9 @@
+import { formatDateYMD } from '@/utils/date.util';
+
 import axios from '../axios';
 
 export const logWorkoutCompletion = async () => {
-  const response = await axios.post('/progress/workout', { date: new Date().toISOString().split('T')[0] });
+  const response = await axios.post('/progress/workout', { date: formatDateYMD(new Date()) });
   return response.data;
 };
 
