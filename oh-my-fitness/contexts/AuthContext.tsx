@@ -11,11 +11,11 @@ import {
   User as FirebaseUser,
 } from 'firebase/auth';
 
-import { User } from '@/types/user.type';
+import { UserInfo } from '@/types/user.type';
 import { auth } from '@/firebase.config';
 
 interface AuthState {
-  user: User | null;
+  user: UserInfo | null;
   token: string | null;
   isLoading: boolean;
   isAuthenticated: boolean;
@@ -23,10 +23,10 @@ interface AuthState {
 
 type AuthAction =
   | { type: 'SET_LOADING'; payload: boolean }
-  | { type: 'LOGIN_SUCCESS'; payload: { user: User; token: string } }
+  | { type: 'LOGIN_SUCCESS'; payload: { user: UserInfo; token: string } }
   | { type: 'LOGOUT' }
-  | { type: 'UPDATE_USER'; payload: Partial<User> }
-  | { type: 'RESTORE_SESSION'; payload: { user: User; token: string } };
+  | { type: 'UPDATE_USER'; payload: Partial<UserInfo> }
+  | { type: 'RESTORE_SESSION'; payload: { user: UserInfo; token: string } };
 
 const initialState: AuthState = {
   user: null,
@@ -75,10 +75,10 @@ const authReducer = (state: AuthState, action: AuthAction): AuthState => {
 
 interface AuthContextType {
   state: AuthState;
-  login: (email: string, password: string) => Promise<{ user: User; token: string }>;
-  register: (name: string, email: string, password: string) => Promise<{ user: User; token: string }>;
+  login: (email: string, password: string) => Promise<{ user: UserInfo; token: string }>;
+  register: (name: string, email: string, password: string) => Promise<{ user: UserInfo; token: string }>;
   logout: () => Promise<void>;
-  updateUser: (userData: Partial<User>) => void;
+  updateUser: (userData: Partial<UserInfo>) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -130,7 +130,7 @@ function useAuthProvider() {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const firebaseUser = userCredential.user;
       const token = await firebaseUser.getIdToken();
-      const user: User = {
+      const user: UserInfo = {
         id: firebaseUser.uid,
         name: firebaseUser.displayName || '',
         email,
@@ -173,7 +173,7 @@ function useAuthProvider() {
       const firebaseUser = userCredential.user;
       await updateProfile(firebaseUser, { displayName: name });
       const token = await firebaseUser.getIdToken();
-      const user: User = {
+      const user: UserInfo = {
         id: firebaseUser.uid,
         name,
         email,
@@ -220,7 +220,7 @@ function useAuthProvider() {
     }
   };
 
-  const updateUser = (userData: Partial<User>) => {
+  const updateUser = (userData: Partial<UserInfo>) => {
     dispatch({ type: 'UPDATE_USER', payload: userData });
     if (state.user) {
       const updatedUser = { ...state.user, ...userData };

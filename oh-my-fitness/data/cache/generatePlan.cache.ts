@@ -1,13 +1,13 @@
 import { useMutation, UseMutationOptions } from '@tanstack/react-query';
 
 import { SurveyData } from '@/contexts/SurveyContext';
-import { User } from '@/types/user.type';
+import { UserInfo } from '@/types/user.type';
 
 import { generatePersonalizedPlan } from '../api/generatePlan.api';
 
 interface UserOnboarding {
   surveyData: Partial<SurveyData>;
-  userInfo: User;
+  userInfo: UserInfo;
 }
 
 export const useGeneratePersonalizedPlan = () => {

@@ -5,45 +5,6 @@ export interface UserWithPlan {
   fitnessPlan: FitnessPlan;
 }
 
-export interface UserProfile {
-  personalGoalsExperience: PersonalGoalsExperience;
-  scheduleAvailability: ScheduleAvailability;
-  equipmentAccess: EquipmentAccess;
-  dietaryPreferences: DietaryPreferences;
-  healthConsiderations: HealthConsiderations;
-  preferencesMotivation: PreferencesMotivation;
-}
-
-export interface PersonalGoalsExperience {
-  primaryFitnessGoal: string;
-  currentWeightLbs: number;
-  desiredWeightLbs: number;
-  heightCms: number;
-  currentFitnessLevel: string;
-  ageGroup: string;
-}
-
-export type ScheduleAvailability = Record<"daysPerWeekWorkout" | "preferredWorkoutTimes", string>;
-
-export interface EquipmentAccess {
-  equipment: string[];
-  location: string;
-}
-
-export interface DietaryPreferences {
-  primaryDietaryPreference: string;
-  restrictionsAllergies: string[];
-}
-
-export interface HealthConsiderations {
-  medicalConditions: string;
-  workoutsToAvoid: string[];
-}
-
-export interface PreferencesMotivation {
-  enjoyedWorkoutTypes: string[];
-}
-
 export interface FitnessPlan {
   userId: string;
   plan: Plan;

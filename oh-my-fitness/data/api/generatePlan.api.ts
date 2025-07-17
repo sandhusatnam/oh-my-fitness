@@ -1,5 +1,5 @@
 import { SurveyData } from '@/contexts/SurveyContext';
-import { User } from '@/types/user.type';
+import { UserInfo } from '@/types/user.type';
 
 import api from '../axios';
 
@@ -35,7 +35,7 @@ const transformSurveyData = (data: any) => {
   };
 };
 
-export const generatePersonalizedPlan = async (surveyData: Partial<SurveyData>, userInfo: User) => {
+export const generatePersonalizedPlan = async (surveyData: Partial<SurveyData>, userInfo: UserInfo) => {
   try {
     const transformedData = transformSurveyData(surveyData);
 

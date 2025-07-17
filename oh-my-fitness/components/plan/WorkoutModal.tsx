@@ -1,4 +1,5 @@
 import React from 'react';
+import { Ionicons } from '@expo/vector-icons';
 
 import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, Modal } from 'react-native';
 
@@ -20,7 +21,14 @@ const WorkoutModal: React.FC<WorkoutModalProps> = ({ visible, exercises, onClose
             {
               exercises?.map((exercise, index) => (
                 <View key={index} style={styles.exerciseItem}>
-                  <Image source={{ uri: exercise.imageUrl }} style={styles.exerciseImage} resizeMode="cover" />
+                  {exercise.imageUrl ? (
+                    <Image source={{ uri: exercise.imageUrl }} style={styles.exerciseImage} resizeMode="cover" />
+                  ) : (
+                    <View style={[styles.exerciseImage, { justifyContent: 'center', alignItems: 'center', backgroundColor: theme.colors.backgroundTertiary }]}> 
+                      <Ionicons name="image-outline" size={40} color={theme.colors.textSecondary} />
+                      <Text style={{ color: theme.colors.textSecondary, fontSize: 12, marginTop: 4 }}>Image coming soon</Text>
+                    </View>
+                  )}
                   <Text style={styles.exerciseName}>{exercise.name}</Text>
                   <Text style={styles.exerciseDetails}>{`Sets: ${exercise.sets}, Reps: ${exercise.reps}`}</Text>
                 </View>
