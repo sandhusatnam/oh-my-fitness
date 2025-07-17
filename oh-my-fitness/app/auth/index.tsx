@@ -4,6 +4,7 @@ import { Input, Button } from '@/components/common';
 import { useAuth } from '@/contexts/AuthContext';
 import { router, useLocalSearchParams } from 'expo-router';
 import { theme } from '@/constants/theme';
+import { showToast } from '@/utils/ToastHelper';
 
 export default function LoginScreen() {
   const params = useLocalSearchParams();
@@ -41,11 +42,13 @@ export default function LoginScreen() {
       if (!!result?.token) {
         router.push('/(tabs)');
       }
-    } catch (error) {
-      //log error
-    }
-    finally{
-       Alert.alert('Login Failed', 'Please check your credentials and try again.');
+      else{
+        showToast('error', 'Invalid credentials. Please try again.');
+      }
+    } catch (error: any) {
+      showToast('error',
+        'Login failed. Please check your credentials and try again.'
+      );
     }
   };
 
