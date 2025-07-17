@@ -1,15 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-import { ActivityIndicator, Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { ActivityIndicator, Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { MealModal, WorkoutModal } from '@/components/plan';
 import { daysOfWeek } from '@/constants/app';
 import { theme } from '@/constants/theme';
-import { useGetUserWithPlan } from '@/data/cache/getUserProfile.cache';
-import { toggleWorkoutCompletion } from '@/data/api/markWorkoutDone.api';
+import { deleteWorkout, logWorkoutCompletion } from '@/data/api/workoutCrud.api';
 import { useGetProgress, useInvalidateProgress } from '@/data/cache/getProgress.cache';
-import type { ProgressData, WorkoutHistoryItem } from '@/types/progress.type';
+import { useGetUserWithPlan } from '@/data/cache/getUserProfile.cache';
+import type { WorkoutHistoryItem } from '@/types/progress.type';
 import { DayOfWeek, Exercise, Meal } from '@/types/userWithPlan.type';
 
 export default function TodayScreen() {
@@ -20,6 +20,7 @@ export default function TodayScreen() {
   const [selectedWorkout, setSelectedWorkout] = useState<Exercise[] | null>(null);
   const [markingDone, setMarkingDone] = useState(false);
   const [doneSuccess, setDoneSuccess] = useState(false);
+  const [deletingWorkout, setDeletingWorkout] = useState(false);
 
   const today = daysOfWeek[new Date(Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York' }).format(new Date())).getDay()];
   const todayPlan = userWithPlan?.fitnessPlan?.plan?.weekly_plan?.[today as DayOfWeek];
@@ -53,12 +54,31 @@ export default function TodayScreen() {
   const handleMarkWorkoutDone = async () => {
     setMarkingDone(true);
     try {
-      await toggleWorkoutCompletion();
+      await logWorkoutCompletion();
       await invalidateProgress(startDate, endDate);
     } catch (e) {
       // swallow error
     } finally {
       setMarkingDone(false);
+    }
+  };
+
+  const handleDeleteWorkout = async () => {
+    console.log(todayPlan);
+    if (!todayPlan?.workout) return;
+    setDeletingWorkout(true);
+    try {
+      const workoutHistory = progress?.workoutData?.history || [];
+      const todayWorkout = workoutHistory.find((item: WorkoutHistoryItem) => item.date.startsWith(todayDateStr));
+
+      if (todayWorkout && todayWorkout._id) {
+        await deleteWorkout(todayWorkout._id);
+        await invalidateProgress(startDate, endDate);
+      }
+    } catch (e) {
+      // TODO implement logging
+    } finally {
+      setDeletingWorkout(false);
     }
   };
 
@@ -101,18 +121,33 @@ export default function TodayScreen() {
                       <TouchableOpacity style={styles.viewButton} onPress={() => openWorkoutModal(todayPlan.workout.exercises)}>
                         <Text style={styles.viewButtonText}>View Exercises</Text>
                       </TouchableOpacity>
-                      <TouchableOpacity
-                        style={[styles.viewButton, { flexDirection: 'row', alignItems: 'center', marginTop: 10, backgroundColor: doneSuccess ? theme.colors.success : theme.colors.backgroundTertiary }]}
-                        onPress={handleMarkWorkoutDone}
-                        disabled={markingDone}
-                      >
-                        {markingDone ? (
-                          <ActivityIndicator size="small" color={theme.colors.textPrimary} style={{ marginRight: 8 }} />
-                        ) : (
-                          <Ionicons name={doneSuccess ? 'checkmark-done' : 'checkmark-done-outline'} size={18} color={theme.colors.textPrimary} style={{ marginRight: 8 }} />
-                        )}
-                        <Text style={styles.viewButtonText}>{doneSuccess ? 'Workout Done!' : 'Mark as Done'}</Text>
-                      </TouchableOpacity>
+                  {doneSuccess ? (
+                    <TouchableOpacity
+                      style={[styles.viewButton, { flexDirection: 'row', alignItems: 'center', marginTop: 10, backgroundColor: theme.colors.error }]}
+                      onPress={handleDeleteWorkout}
+                      disabled={deletingWorkout}
+                    >
+                      {deletingWorkout ? (
+                        <ActivityIndicator size="small" color={theme.colors.textPrimary} style={{ marginRight: 8 }} />
+                      ) : (
+                        <Ionicons name="trash-outline" size={18} color={theme.colors.textPrimary} style={{ marginRight: 8 }} />
+                      )}
+                      <Text style={styles.viewButtonText}>Remove Workout</Text>
+                    </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity
+                      style={[styles.viewButton, { flexDirection: 'row', alignItems: 'center', marginTop: 10, backgroundColor: doneSuccess ? theme.colors.success : theme.colors.backgroundTertiary }]}
+                      onPress={handleMarkWorkoutDone}
+                      disabled={markingDone}
+                    >
+                      {markingDone ? (
+                        <ActivityIndicator size="small" color={theme.colors.textPrimary} style={{ marginRight: 8 }} />
+                      ) : (
+                        <Ionicons name={doneSuccess ? 'checkmark-done' : 'checkmark-done-outline'} size={18} color={theme.colors.textPrimary} style={{ marginRight: 8 }} />
+                      )}
+                      <Text style={styles.viewButtonText}>{doneSuccess ? 'Workout Done!' : 'Mark as Done'}</Text>
+                    </TouchableOpacity>
+                  )}
                     </>
                   )}
                 </View>
