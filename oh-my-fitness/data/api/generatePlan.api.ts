@@ -44,7 +44,6 @@ export const generatePersonalizedPlan = async (surveyData: Partial<SurveyData>, 
       userInfo
     });
 
-      console.log(response.data);
     return response.data;
   } catch (error) {
     console.error('Plan generation error:', error);

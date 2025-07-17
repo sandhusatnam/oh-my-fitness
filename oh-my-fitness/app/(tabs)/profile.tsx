@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 
-import { useQueryClient } from '@tanstack/react-query';
 import { router } from 'expo-router';
 import { Alert, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
@@ -9,6 +8,7 @@ import { theme } from '@/constants/theme';
 import { useAuth } from '@/contexts/AuthContext';
 import { useGetUserWithPlan } from '@/data/cache/getUserProfile.cache';
 import { useUpdateWeight } from '@/data/cache/updateWeight.cache';
+import { formatDateYMD } from '@/utils/date.util';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function ProfileScreen() {
@@ -20,19 +20,10 @@ export default function ProfileScreen() {
   const dietaryPreferences = user?.profile?.dietaryPreferences;
   const userInfo = user?.userInfo;
 
-  const plan = userWithPlan?.fitnessPlan;
-
   const { mutateAsync: updateWeightAsync, isError: isWeightError } = useUpdateWeight();
   const [editingWeight, setEditingWeight] = useState(false);
   const [weightError, setWeightError] = useState<string | null>(null);
-  const queryClient = useQueryClient();
 
-  // Calculate date range for last 30 days
-  const today = new Date();
-  const endDate = today.toISOString().split('T')[0];
-  const startDateObj = new Date(today);
-  startDateObj.setDate(today.getDate() - 30);
-  const startDate = startDateObj.toISOString().split('T')[0];
 
   // Use weight history from userWithPlan.user.progress if available
   const progressWeightHistory = user?.progress?.weightHistory || [];
@@ -43,33 +34,32 @@ export default function ProfileScreen() {
 
   const handleLogout = async () => {
     
-              await logout();
-              console.log('Logout successful, navigating to /auth');
-              Alert.alert('Logged out', 'You have been logged out.');
-              router.replace('/auth');
+    await logout();
+    Alert.alert('Logged out', 'You have been logged out.');
+    router.replace('/auth');
 
-    // Alert.alert(
-    //   'Logout',
-    //   'Are you sure you want to logout?',
-    //   [
-    //     { text: 'Cancel', style: 'cancel' },
-    //     {
-    //       text: 'Logout',
-    //       style: 'destructive',
-    //       onPress: async () => {
-    //         try {
-    //           await logout();
-    //           console.log('Logout successful, navigating to /');
-    //           Alert.alert('Logged out', 'You have been logged out.');
-    //           router.replace('/');
-    //         } catch (e) {
-    //           console.error('Logout error:', e);
-    //           Alert.alert('Logout failed', 'There was a problem logging out.');
-    //         }
-    //       },
-    //     },
-    //   ]
-    // );
+      Alert.alert(
+        'Logout',
+        'Are you sure you want to logout?',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          {
+            text: 'Logout',
+            style: 'destructive',
+            onPress: async () => {
+              try {
+                await logout();
+                console.log('Logout successful, navigating to /');
+                Alert.alert('Logged out', 'You have been logged out.');
+                router.replace('/');
+              } catch (e) {
+                console.error('Logout error:', e);
+                Alert.alert('Logout failed', 'There was a problem logging out.');
+              }
+            },
+          },
+        ]
+    );
   };
 
   // Update weight input if user/profile changes
@@ -86,7 +76,7 @@ export default function ProfileScreen() {
     }
     try {
       await updateWeightAsync({
-        date: new Date().toISOString(),
+        date: formatDateYMD(new Date()),
         weight,
       });
       setEditingWeight(false);

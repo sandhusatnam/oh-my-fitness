@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react';
 
 import { Ionicons } from '@expo/vector-icons';
+import { addDays, subDays } from 'date-fns';
+import { toZonedTime } from 'date-fns-tz';
 import { ActivityIndicator, Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { MealModal, WorkoutModal } from '@/components/plan';
 import { daysOfWeek } from '@/constants/app';
+import { formatDateYMD, TIME_ZONE } from '@/utils/date.util';
 import { theme } from '@/constants/theme';
 import { deleteWorkout, logWorkoutCompletion } from '@/data/api/workoutCrud.api';
 import { useGetProgress, useInvalidateProgress } from '@/data/cache/getProgress.cache';
@@ -22,8 +25,12 @@ export default function TodayScreen() {
   const [doneSuccess, setDoneSuccess] = useState(false);
   const [deletingWorkout, setDeletingWorkout] = useState(false);
 
-  const today = daysOfWeek[new Date(Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York' }).format(new Date())).getDay()];
+  const nyNow = toZonedTime(new Date(), TIME_ZONE);
+  const today = daysOfWeek[nyNow.getDay()];
   const todayPlan = userWithPlan?.fitnessPlan?.plan?.weekly_plan?.[today as DayOfWeek];
+  const todayDateStr = formatDateYMD(nyNow);
+  const endDate = formatDateYMD(addDays(nyNow, 1));
+  const startDate = formatDateYMD(subDays(nyNow, 30));
 
   const openMealModal = (meal: Meal) => {
     setSelectedMeal(meal);
@@ -35,14 +42,6 @@ export default function TodayScreen() {
     setWorkoutModalVisible(true);
   };
 
-  const todayDate = new Date();
-  const todayDateStr = todayDate.toISOString().split('T')[0];
-  const endDateObj = new Date(todayDate);
-  endDateObj.setDate(todayDate.getDate() + 1);
-  const endDate = endDateObj.toISOString().split('T')[0];
-  const startDateObj = new Date(todayDate);
-  startDateObj.setDate(todayDate.getDate() - 30);
-  const startDate = startDateObj.toISOString().split('T')[0];
   const { data: progress } = useGetProgress(startDate, endDate);
   const invalidateProgress = useInvalidateProgress();
 
