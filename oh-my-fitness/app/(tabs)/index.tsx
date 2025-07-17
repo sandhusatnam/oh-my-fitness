@@ -1,15 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-import { ActivityIndicator, Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { ActivityIndicator, Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { MealModal, WorkoutModal } from '@/components/plan';
 import { daysOfWeek } from '@/constants/app';
 import { theme } from '@/constants/theme';
-import { useGetUserWithPlan } from '@/data/cache/getUserProfile.cache';
 import { toggleWorkoutCompletion } from '@/data/api/markWorkoutDone.api';
 import { useGetProgress, useInvalidateProgress } from '@/data/cache/getProgress.cache';
-import type { ProgressData, WorkoutHistoryItem } from '@/types/progress.type';
+import { useGetUserWithPlan } from '@/data/cache/getUserProfile.cache';
+import type { WorkoutHistoryItem } from '@/types/progress.type';
 import { DayOfWeek, Exercise, Meal } from '@/types/userWithPlan.type';
 
 export default function TodayScreen() {
@@ -94,21 +94,27 @@ export default function TodayScreen() {
                   <Text style={styles.workoutTitle}>{todayPlan.workout.type}</Text>
                   <Text style={styles.workoutDescription}>{todayPlan.workout.notes}</Text>
                   <Text style={styles.workoutMeta}>{`${todayPlan.workout.duration_minutes} min`}</Text>
-                  <TouchableOpacity style={styles.viewButton} onPress={() => openWorkoutModal(todayPlan.workout.exercises)}>
-                    <Text style={styles.viewButtonText}>View Exercises</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={[styles.viewButton, { flexDirection: 'row', alignItems: 'center', marginTop: 10, backgroundColor: doneSuccess ? theme.colors.success : theme.colors.backgroundTertiary }]}
-                    onPress={handleMarkWorkoutDone}
-                    disabled={markingDone}
-                  >
-                    {markingDone ? (
-                      <ActivityIndicator size="small" color={theme.colors.textPrimary} style={{ marginRight: 8 }} />
-                    ) : (
-                      <Ionicons name={doneSuccess ? 'checkmark-done' : 'checkmark-done-outline'} size={18} color={theme.colors.textPrimary} style={{ marginRight: 8 }} />
-                    )}
-                    <Text style={styles.viewButtonText}>{doneSuccess ? 'Workout Done!' : 'Mark as Done'}</Text>
-                  </TouchableOpacity>
+                  {todayPlan.workout.type && todayPlan.workout.type.toLowerCase() === 'rest' ? (
+                    <Text style={{ color: theme.colors.textSecondary, marginTop: 10, fontStyle: 'italic' }}>Rest Day – No workout scheduled</Text>
+                  ) : (
+                    <>
+                      <TouchableOpacity style={styles.viewButton} onPress={() => openWorkoutModal(todayPlan.workout.exercises)}>
+                        <Text style={styles.viewButtonText}>View Exercises</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        style={[styles.viewButton, { flexDirection: 'row', alignItems: 'center', marginTop: 10, backgroundColor: doneSuccess ? theme.colors.success : theme.colors.backgroundTertiary }]}
+                        onPress={handleMarkWorkoutDone}
+                        disabled={markingDone}
+                      >
+                        {markingDone ? (
+                          <ActivityIndicator size="small" color={theme.colors.textPrimary} style={{ marginRight: 8 }} />
+                        ) : (
+                          <Ionicons name={doneSuccess ? 'checkmark-done' : 'checkmark-done-outline'} size={18} color={theme.colors.textPrimary} style={{ marginRight: 8 }} />
+                        )}
+                        <Text style={styles.viewButtonText}>{doneSuccess ? 'Workout Done!' : 'Mark as Done'}</Text>
+                      </TouchableOpacity>
+                    </>
+                  )}
                 </View>
               </View>
             )}
