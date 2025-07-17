@@ -7,6 +7,8 @@ import { Button, Input } from '@/components/common';
 import { EMAIL_REGEX, MIN_PASSWORD_LENGTH } from '@/constants/app';
 import { theme } from '@/constants/theme';
 import { useAuth } from '@/contexts/AuthContext';
+import Toast from 'react-native-toast-message';
+import { showToast } from '@/utils/ToastHelper';
 
 export default function RegisterScreen() {
   const { register, state } = useAuth();
@@ -39,6 +41,7 @@ export default function RegisterScreen() {
   };
 
   const handleRegister = async () => {
+    Toast.hide();
     if (!validateForm()) return;
 
     try {
@@ -46,7 +49,7 @@ export default function RegisterScreen() {
       router.push('/loading');
 
     } catch (error: any) {
-      Alert.alert('Registration Failed', error.message || 'Please try again.');
+      showToast( 'error' , error.message || 'Please try again.');
     }
   };
 
