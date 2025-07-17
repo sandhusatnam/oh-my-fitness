@@ -1,4 +1,5 @@
 import React from 'react';
+import { Ionicons } from '@expo/vector-icons';
 
 import { Image, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
@@ -19,7 +20,14 @@ const MealModal: React.FC<MealModalProps> = ({ visible, meal, onClose }) => {
           {!!meal && (
             <>
               <Text style={styles.modalTitle}>{meal.meal_type}</Text>
-              <Image source={{ uri: meal.imageUrl }} style={styles.modalImage} resizeMode="cover" />
+              {meal.imageUrl ? (
+                <Image source={{ uri: meal.imageUrl }} style={styles.modalImage} resizeMode="cover" />
+              ) : (
+                <View style={[styles.modalImage, { justifyContent: 'center', alignItems: 'center', backgroundColor: theme.colors.backgroundTertiary }]}> 
+                  <Ionicons name="image-outline" size={48} color={theme.colors.textSecondary} />
+                  <Text style={{ color: theme.colors.textSecondary, marginTop: 8 }}>Image coming soon</Text>
+                </View>
+              )}
               <Text style={styles.modalDescription}>{meal.description}</Text>
               <Text style={styles.modalMacros}>Calories: {meal.macros?.calories}</Text>
               <Text style={styles.modalMacros}>Protein: {meal.macros?.protein}g</Text>
