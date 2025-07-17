@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-import { View, Text, StyleSheet, SafeAreaView, Image, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, Image, Dimensions, TouchableOpacity } from 'react-native';
 import { router } from 'expo-router';
 import Animated, { 
   FadeInUp, 
@@ -80,6 +80,11 @@ export default function WelcomeScreen() {
               onPress={handleGetStarted}
               style={styles.getStartedButton}
             />
+            <TouchableOpacity onPress={() => router.push({ pathname: '/auth', params: { from: 'welcome' } })} style={{ marginTop: 16, alignSelf: 'center' }}>
+              <Text style={{ color: theme.colors.primary, fontWeight: theme.fontWeight.semibold, fontSize: theme.fontSize.md }}>
+                Already have an account? Sign In
+              </Text>
+            </TouchableOpacity>
           </Animated.View>
         </View>
     </SafeAreaView>
