@@ -9,7 +9,7 @@ const transformSurveyData = (data: any) => {
       primaryFitnessGoal: data.fitnessGoals[0],
       currentWeightLbs: parseInt(data.currentWeight, 10),
       desiredWeightLbs: parseInt(data.desiredWeight, 10),
-      heightCms: Math.round(parseInt(data.height, 10) * 2.54),
+      heightCms: parseInt(data.height, 10),
       currentFitnessLevel: data.fitnessLevel,
       ageGroup: data.ageGroup
     },
