@@ -29,10 +29,10 @@ const MealModal: React.FC<MealModalProps> = ({ visible, meal, onClose }) => {
                 </View>
               )}
               <Text style={styles.modalDescription}>{meal.description}</Text>
-              <Text style={styles.modalMacros}>Calories: {meal.macros?.calories}</Text>
-              <Text style={styles.modalMacros}>Protein: {meal.macros?.protein}g</Text>
-              <Text style={styles.modalMacros}>Carbs: {meal.macros?.carbs}g</Text>
-              <Text style={styles.modalMacros}>Fat: {meal.macros?.fat}g</Text>
+              <Text style={styles.modalMacros}>Calories: {meal.macronutrient_summary?.estimated_calories}</Text>
+              <Text style={styles.modalMacros}>Protein: {meal.macronutrient_summary?.protein_grams}g</Text>
+              <Text style={styles.modalMacros}>Carbs: {meal.macronutrient_summary?.carbs_grams}g</Text>
+              <Text style={styles.modalMacros}>Fat: {meal.macronutrient_summary?.fat_grams}g</Text>
             </>
           )}
           <TouchableOpacity style={styles.closeButton} onPress={onClose}>

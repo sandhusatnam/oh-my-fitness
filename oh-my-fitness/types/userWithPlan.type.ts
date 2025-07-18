@@ -35,12 +35,12 @@ export interface DietPlan {
 export interface Meal {
   description: string;
   meal_type: string;
-  imageUrl: string;
-  macros: {
-    calories: number;
-    protein: number;
-    carbs: number;
-    fat: number;
+  imageUrl?: string;
+  macronutrient_summary: {
+    estimated_calories: number;
+    protein_grams: number;
+    carbs_grams: number;
+    fat_grams: number;
   };
 }
 
@@ -53,7 +53,8 @@ export interface WorkoutPlan {
 
 export interface Exercise {
   name: string;
-  sets: number;
-  reps: number;
-  imageUrl: string;
+  notes?: string;
+  sets: number | string;
+  reps: number | string;
+  imageUrl?: string;
 }
