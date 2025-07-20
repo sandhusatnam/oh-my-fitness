@@ -16,8 +16,8 @@ export default function Progress() {
   const startDate = formatDateYMD(subDays(todayDate, 30));
   const { data: progress, isLoading } = useGetProgress(startDate, endDate);
 
-  const workoutsCompleted = progress?.workoutData?.metrics?.frequency.totalWorkouts || 0;
-  const workoutStreak = progress?.workoutData?.metrics?.frequency.longestStreak || 0;
+  const workoutsCompleted = progress?.workoutData?.metrics?.frequency?.totalWorkouts ?? 0;
+  const workoutStreak = progress?.workoutData?.metrics?.frequency?.longestStreak ?? 0;
 
   // Calculate weight change
   const weightHistory = progress?.weightData?.history || [];
