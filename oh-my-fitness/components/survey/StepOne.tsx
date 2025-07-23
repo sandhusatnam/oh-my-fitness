@@ -100,7 +100,7 @@ export const StepOne: FC = () => {
           />
 
           <Input
-            placeholder="Height (in)"
+            placeholder="Height (cms)"
             value={height}
             onChangeText={setHeight}
             keyboardType="numeric"
