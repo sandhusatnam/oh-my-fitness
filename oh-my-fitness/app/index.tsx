@@ -93,9 +93,10 @@ export default function WelcomeScreen() {
 
 const styles = StyleSheet.create({
   imageContainer: {
-    width: width,
+    width: '100%',
+    aspectRatio: 1.6,
     height: height * 0.35,
-    overflow: 'hidden',
+    alignSelf: 'center',
     marginBottom: 40,
     elevation: 10,
     shadowColor: '#000',
@@ -104,6 +105,7 @@ const styles = StyleSheet.create({
       height: 5,
     },
     shadowOpacity: 0.15,
+    overflow: 'hidden',
   },
   heroImage: {
     width: '100%',
